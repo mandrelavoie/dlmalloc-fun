@@ -1,0 +1,3 @@
+[submodule "dlmalloc"]
+	path = dlmalloc
+	url = https://github.com/ennorehling/dlmalloc.git
