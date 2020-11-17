@@ -26,8 +26,9 @@ ${OUTFILE}: main.c ${DLMALLOC}/lib/libmalloc.a ${OUTDIR}
 
 all: ${OUTFILE}
 
+# Disable aslr for that process
 run: ${OUTFILE}
-	@${OUTFILE} $(shell ${PYTHON} ${PAYLOAD})
+	@setarch $(uname -m) -R ${OUTFILE} $(shell ${PYTHON} ${PAYLOAD})
 
 cutter: ${OUTFILE}
 	${CUTTER} $< ${CUTTERARGS}
