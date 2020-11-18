@@ -2,5 +2,5 @@
 
 print('A' * 20, sep=' ')
 print('B' * 20, sep=' ')
-print('C' * 20)
+print('C' * 20, sep=' ')
 print('D' * 20)
