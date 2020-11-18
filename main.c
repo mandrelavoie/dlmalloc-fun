@@ -5,29 +5,25 @@
 
 #include "dlmalloc/malloc.h"
 
-#define PRINT_DEBUG_INFO 0
+#define PRINT_DEBUG_INFO 1
 
 #define CHUNK_SIZE 0x200
 
 static void display_chunk(char* name, uint8_t *ptr) {
     uint64_t *headers = (uint64_t*)ptr - 2;
-    uint64_t prev_size = headers[0];
-    uint64_t size_raw = headers[1];
-    uint64_t size = size_raw & ~3;
-    uint64_t prev_in_use = size_raw & 1;
-
     printf("Chunk %s [0x%lx]\n", name, (uint64_t)headers);
+
+    uint64_t prev_size = headers[0];
+    uint64_t size = headers[1] & ~3;
+    uint64_t prev_in_use = headers[1] & 1;
     printf("    prev_size:       0x%016lx   ", prev_size);
     printf("    size:            0x%016lx   ", size);
-    printf("    prev_in_use:     %d\n", (char)prev_in_use);
+    printf("    prev_in_use:     %ld\n",       prev_in_use);
 
-    uint64_t *fd = headers[2];
-    uint64_t *bk = headers[3];
+    uint64_t fd = headers[2];
+    uint64_t bk = headers[3];
     printf("    fd:              0x%016lx   ", fd);
-    printf("    bk:              0x%016lx\n", bk);
-
-    uint64_t *next_size = headers + (size / 8) + 1;
-    uint64_t in_use = next_size[0] & 1;
+    printf("    bk:              0x%016lx\n",  bk);
 
     printf("    *data:        ");
     for (int i = 0; i < 24; i++) {
@@ -58,30 +54,30 @@ int main(int argc, char **argv)
 
     #if PRINT_DEBUG_INFO
     printf("Before freeing:\n");
-    display_chunk("a", a, 0);
-    display_chunk("b", b, 0);
-    display_chunk("c", c, 0);
-    display_chunk("d", d, 0);
+    display_chunk("a", a);
+    display_chunk("b", b);
+    display_chunk("c", c);
+    display_chunk("d", d);
     #endif
 
     free(c);
 
     #if PRINT_DEBUG_INFO
-    printf("\nAfter freeing b:\n");
-    display_chunk("a", a, 0);
-    display_chunk("b", b, 0);
-    display_chunk("c", c, 1);
-    display_chunk("d", d, 0);
+    printf("\nAfter freeing c:\n");
+    display_chunk("a", a);
+    display_chunk("b", b);
+    display_chunk("c", c);
+    display_chunk("d", d);
     #endif
 
     free(b);
 
     #if PRINT_DEBUG_INFO
     printf("\nAfter freeing b:\n");
-    display_chunk("a", a, 1);
-    display_chunk("b", b, 0);
-    display_chunk("c", c, 1);
-    display_chunk("d", d, 0);
+    display_chunk("a", a);
+    display_chunk("b", b);
+    display_chunk("c", c);
+    display_chunk("d", d);
     #endif
 
     time_t now = time(0);
