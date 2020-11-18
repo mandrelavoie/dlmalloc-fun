@@ -9,7 +9,7 @@
 
 #define CHUNK_SIZE 0x200
 
-static void display_chunk(char* name, uint8_t *ptr, int freed) {
+static void display_chunk(char* name, uint8_t *ptr) {
     uint64_t *headers = (uint64_t*)ptr - 2;
     uint64_t prev_size = headers[0];
     uint64_t size_raw = headers[1];
@@ -25,7 +25,6 @@ static void display_chunk(char* name, uint8_t *ptr, int freed) {
     uint64_t *bk = headers[3];
     printf("    fd:              0x%016lx   ", fd);
     printf("    bk:              0x%016lx\n", bk);
-    
 
     uint64_t *next_size = headers + (size / 8) + 1;
     uint64_t in_use = next_size[0] & 1;
@@ -86,7 +85,6 @@ int main(int argc, char **argv)
     #endif
 
     time_t now = time(0);
-
     printf("\nNope. Not exploited.\nBy the way... it's %s\n", ctime(&now));
 
     return 0;
