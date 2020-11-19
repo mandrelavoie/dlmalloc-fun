@@ -4,7 +4,7 @@ DLMALLOC=dlmalloc
 
 MAKE=make
 CC=gcc
-LDFLAGS=-L ${DLMALLOC}/lib -l:libmalloc.a
+LDFLAGS=-L ${DLMALLOC}/lib -l:libmalloc.a -Wl,-z,norelro
 
 CUTTER=cutter
 CUTTERARGS=-A 1
